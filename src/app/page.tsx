@@ -149,15 +149,14 @@ export default function Home() {
               Secure Storage
             </h3>
             <p className="text-gray-600 text-lg font-medium">
-              Your documents are safely stored with Supabase's enterprise-grade
-              security. Privacy and data protection guaranteed.
+              Your documents are safely stored with Supabase&apos;s
+              enterprise-grade security. Privacy and data protection guaranteed.
             </p>
           </div>
           {/* Feature 3 */}
           <div className="bg-white/70 backdrop-blur rounded-2xl shadow-2xl p-10 flex flex-col items-center text-center">
             <div className="bg-gradient-to-br from-[#7b61ff] to-[#a78bfa] rounded-xl p-5 mb-5 shadow-lg">
               <ZapIcon className="w-10 h-10 text-white" />
-             
             </div>
             <h3
               className="text-2xl font-bold mb-3 text-gray-900"
