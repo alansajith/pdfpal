@@ -44,8 +44,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({ pdfId }) => {
       if (!res.ok) throw new Error(data.error || "Unknown error");
       setMessages((msgs) => [...msgs, { role: "ai", text: data.answer }]);
       setInput("");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Unknown error");
+      }
     } finally {
       setLoading(false);
     }

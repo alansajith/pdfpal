@@ -86,7 +86,9 @@ export default async function handler(
     }
 
     return res.status(200).json({ answer });
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+  } catch (err: unknown) {
+    return res
+      .status(500)
+      .json({ error: err instanceof Error ? err.message : "Unknown error" });
   }
 }

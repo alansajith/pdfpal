@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import ChatBox from "@/components/ChatBox";
-import Link from "next/link";
 
 interface PDF {
   id: string;

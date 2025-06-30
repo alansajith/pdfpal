@@ -67,10 +67,10 @@ export default async function handler(
       let embedding = null;
       try {
         const embeddingResult = await embeddingModel.embedContent({
-          content: { parts: [{ text: content }] },
+          content: { role: "user", parts: [{ text: content }] },
         });
         embedding = embeddingResult.embedding?.values || null;
-      } catch (e) {
+      } catch {
         embedding = null;
       }
       chunkRows.push({
@@ -90,7 +90,9 @@ export default async function handler(
     return res
       .status(200)
       .json({ status: "ok", pdfId: pdfRow.id, chunkCount: chunks.length });
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+  } catch (err: unknown) {
+    return res
+      .status(500)
+      .json({ error: err instanceof Error ? err.message : "Unknown error" });
   }
 }
