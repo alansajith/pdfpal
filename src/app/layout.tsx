@@ -1,11 +1,12 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import type { User } from "@supabase/auth-js";
+import { FileText } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [user, setUser] = useState<User | null>(null);
+  const pathname = usePathname();
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -42,18 +45,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased${
+          pathname === "/chat" ? " overflow-hidden" : ""
+        }`}
       >
         {/* Modern SaaS-style Header */}
-        <header className="sticky top-0 z-50 w-full flex items-center justify-between px-8 py-4  backdrop-blur shadow-lg rounded-full">
+        <header className="sticky top-0 z-50 w-full flex items-center justify-between px-8 py-4  backdrop-blur shadow-lg ">
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-br from-[#7b61ff] to-[#5f47c7] rounded-xl p-2">
-              <Image
-                src="/file.svg"
-                alt="PDF Pal Logo"
-                width={32}
-                height={32}
-              />
+              <span className="bg-gradient-to-br p-1 inline-flex items-center justify-center">
+                <FileText size={28} className="text-white" />
+              </span>
             </div>
             <span className="text-2xl font-extrabold bg-gradient-to-r from-[#7b61ff] to-[#5f47c7] bg-clip-text text-transparent tracking-tight">
               <Link href="/">PDF Pal</Link>

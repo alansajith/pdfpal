@@ -34,9 +34,11 @@ export default async function handler(
     }
     const buffer = Buffer.from(await data.arrayBuffer());
 
-    // Extract text from PDF
+    // Extract text and metadata from PDF
     const parsed = await pdfParse(buffer);
     const extractedText = parsed.text;
+    const numPages = parsed.numpages || 0;
+    const fileSize = buffer.length; // in bytes
 
     // Store PDF metadata in 'pdfs' table
     const { data: pdfRow, error: pdfError } = await supabase
@@ -47,6 +49,8 @@ export default async function handler(
           file_name: fileName,
           storage_path: storagePath,
           extracted_text: extractedText,
+          file_size: fileSize,
+          num_pages: numPages,
         },
       ])
       .select()
@@ -87,9 +91,13 @@ export default async function handler(
       return res.status(500).json({ error: "Failed to insert PDF chunks" });
     }
 
-    return res
-      .status(200)
-      .json({ status: "ok", pdfId: pdfRow.id, chunkCount: chunks.length });
+    return res.status(200).json({
+      status: "ok",
+      pdfId: pdfRow.id,
+      chunkCount: chunks.length,
+      numPages,
+      fileSize,
+    });
   } catch (err: unknown) {
     return res
       .status(500)

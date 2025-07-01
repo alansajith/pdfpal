@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import PDFUploader from "@/components/PDFUploader";
 import Link from "next/link";
+import { Trash2, MessageCircle } from "lucide-react";
 
 interface PDF {
   id: string;
   file_name: string;
   uploaded_at: string;
   storage_path?: string;
+  file_size?: number;
+  num_pages?: number;
 }
 
 export default function DashboardPage() {
@@ -29,7 +32,7 @@ export default function DashboardPage() {
     }
     const { data, error } = await supabase
       .from("pdfs")
-      .select("id, file_name, uploaded_at, storage_path")
+      .select("id, file_name, uploaded_at, storage_path, file_size, num_pages")
       .eq("user_id", user.id)
       .order("uploaded_at", { ascending: false });
     if (error) {
@@ -116,43 +119,112 @@ export default function DashboardPage() {
               No PDFs uploaded yet.
             </div>
           ) : (
-            <ul className="divide-y divide-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {pdfs.map((pdf) => (
-                <li
+                <div
                   key={pdf.id}
-                  className="py-4 flex justify-between items-center hover:bg-blue-50 transition-colors rounded px-2"
+                  className="rounded-2xl bg-white shadow-lg p-6 flex flex-col gap-4 border border-gray-100 relative"
                 >
-                  <div>
-                    <span className="text-lg text-gray-900 font-medium">
-                      {pdf.file_name}
-                    </span>
-                    <span className="block text-xs text-gray-500">
-                      {new Date(pdf.uploaded_at).toLocaleString()}
-                    </span>
-                  </div>
+                  {/* Dustbin icon button */}
                   <button
-                    className={`ml-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow transition-colors ${
-                      deletingId === pdf.id
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
+                    className="absolute top-3 right-3 p-2 rounded-full bg-gray-100 hover:bg-red-100 transition-colors"
+                    title="Delete PDF"
+                    aria-label="Delete PDF"
                     onClick={() => handleDelete(pdf)}
                     disabled={deletingId === pdf.id}
                   >
-                    {deletingId === pdf.id ? "Deleting..." : "Delete"}
+                    <Trash2 width={20} height={20} className="text-red-500" />
                   </button>
-                </li>
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-xl bg-gradient-to-br from-orange-400 to-pink-500 p-3 flex items-center justify-center">
+                      <svg
+                        width="32"
+                        height="32"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <rect
+                          width="24"
+                          height="24"
+                          rx="8"
+                          fill="url(#pdfcard_linear)"
+                        />
+                        <path
+                          d="M8 7a2 2 0 012-2h4a2 2 0 012 2v10a2 2 0 01-2 2h-4a2 2 0 01-2-2V7z"
+                          stroke="#fff"
+                          strokeWidth="2"
+                        />
+                        <path
+                          d="M9 9h6"
+                          stroke="#fff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M9 13h6"
+                          stroke="#fff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M9 17h2"
+                          stroke="#fff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <defs>
+                          <linearGradient
+                            id="pdfcard_linear"
+                            x1="0"
+                            y1="0"
+                            x2="24"
+                            y2="24"
+                            gradientUnits="userSpaceOnUse"
+                          >
+                            <stop stopColor="#fb923c" />
+                            <stop offset="1" stopColor="#ec4899" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
+                    <span className="text-xl font-bold text-gray-900">
+                      {pdf.file_name}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1 text-gray-600 text-base">
+                    <div className="flex justify-between">
+                      <span>Size:</span>
+                      <span>
+                        {pdf.file_size
+                          ? (pdf.file_size / (1024 * 1024)).toFixed(2) + " MB"
+                          : "Unknown"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Pages:</span>
+                      <span>{pdf.num_pages ?? "Unknown"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Uploaded:</span>
+                      <span>{new Date(pdf.uploaded_at).toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <Link href={`/chat?pdfId=${pdf.id}`} className="mt-4">
+                    <button className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold text-lg shadow hover:from-green-600 hover:to-green-400 transition-all">
+                      <MessageCircle
+                        width={22}
+                        height={22}
+                        className="text-white"
+                      />
+                      Chat with PDF
+                    </button>
+                  </Link>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </div>
-      <Link
-        href="/chat"
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-colors z-50"
-      >
-        Go to Chat
-      </Link>
     </div>
   );
 }
