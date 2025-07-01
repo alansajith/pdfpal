@@ -4,7 +4,7 @@ declare module "pdf-parse" {
     numpages: number;
     numrender: number;
     data: unknown;
-    metadata: any;
+    metadata: unknown;
     version: string;
   }>;
   export default pdfParse;
