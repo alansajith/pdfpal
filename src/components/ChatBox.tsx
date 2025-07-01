@@ -71,8 +71,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ pdfId }) => {
               </span>
               <div className="flex flex-col">
                 <div className="bg-white rounded-xl px-4 py-3 shadow border border-gray-100 text-gray-800 text-base max-w-[340px]">
-                  Hello! I'm your PDF assistant. Upload a document or ask me
-                  anything about your existing PDFs.
+                  Hello! I&apos;m your PDF assistant. Upload a document or ask
+                  me anything about your existing PDFs.
                 </div>
                 <span className="text-xs text-gray-400 mt-1 ml-1">
                   Just now

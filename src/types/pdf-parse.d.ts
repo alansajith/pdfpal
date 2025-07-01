@@ -3,7 +3,7 @@ declare module "pdf-parse" {
     text: string;
     numpages: number;
     numrender: number;
-    info: any;
+    data: unknown;
     metadata: any;
     version: string;
   }>;

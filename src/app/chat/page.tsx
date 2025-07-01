@@ -198,8 +198,8 @@ export default function ChatPage() {
                   </svg>
                 </div>
                 <div className="text-xl font-semibold text-gray-700 mb-2 text-center">
-                  Hello! I'm your PDF assistant. Upload a document or ask me
-                  anything about your existing PDFs.
+                  Hello! I&apos;m your PDF assistant. Upload a document or ask
+                  me anything about your existing PDFs.
                 </div>
                 <div className="text-gray-400 text-sm">Just now</div>
               </div>
